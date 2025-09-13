@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College ERP Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+
+
+<body>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🏫</span>
+                    <span>College ERP Portal</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showSection('home')">Home</a></li>
+                        <li><a href="#" onclick="showSection('studentLogin')">Student</a></li>
+                        <li><a href="#" onclick="showSection('facultyLogin')">Faculty</a></li>
+                        <li><a href="#" onclick="showSection('adminLogin')">Admin</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Home Section -->
+        <section id="home" class="page-section active">
+            <div class="hero">
+                <h1>Welcome to College ERP Portal</h1>
+                <p>A comprehensive management system for students, faculty, and administrators</p>
+
+                <div class="login-options">
+                    <div class="login-card" onclick="showSection('studentLogin')">
+                        <div class="login-icon">🧑‍🎓</div>
+                        <h3>Student Login</h3>
+                        <p>Access your academic records, fees, internship details, and more</p>
+                        <button class="btn">Login as Student</button>
+                    </div>
+
+                    <div class="login-card" onclick="showSection('facultyLogin')">
+                        <div class="login-icon">👨‍🏫</div>
+                        <h3>Faculty Login</h3>
+                        <p>Manage your schedule, view student results, and update records</p>
+                        <button class="btn">Login as Faculty</button>
+                    </div>
+
+                    <div class="login-card" onclick="showSection('adminLogin')">
+                        <div class="login-icon">👨‍💼</div>
+                        <h3>Admin Login</h3>
+                        <p>Administer the system, manage users, and view institutional data</p>
+                        <button class="btn">Login as Admin</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Login Section -->
+        <section id="studentLogin" class="page-section">
+            <h2>Student Login</h2>
+            <div class="login-form">
+                <form id="studentForm" onsubmit="loginStudent(event)">
+                    <div class="form-group">
+                        <label for="studentRegNo">Registration Number</label>
+                        <input type="text" id="studentRegNo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentPassword">Password</label>
+                        <input type="password" id="studentPassword" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentOTP">One Time Password (OTP)</label>
+                        <div class="captcha-container">
+                            <input type="text" id="studentOTP" placeholder="Enter OTP" required>
+                            <button type="button" class="btn btn-secondary" onclick="generateOTP('student')">Send
+                                OTP</button>
+                        </div>
+                        <small id="studentOTPMsg" style="color: green; display: none;">
+                            OTP sent! (Check popup or SMS/email in real system)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Captcha</label>
+                        <div class="captcha-container">
+                            <div class="captcha-code" id="studentCaptcha">A7B2</div>
+                            <button type="button" class="btn btn-secondary"
+                                onclick="generateCaptcha('studentCaptcha')">Refresh</button>
+                        </div>
+                        <input type="text" id="studentCaptchaInput" placeholder="Enter captcha" required>
+                    </div>
+
+                    <button type="submit" class="btn">Login</button>
+                    <button type="button" class="btn btn-secondary" onclick="showSection('home')">Back</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Faculty Login Section -->
+        <section id="facultyLogin" class="page-section">
+            <h2>Faculty Login</h2>
+            <div class="login-form">
+                <form id="facultyForm" onsubmit="loginFaculty(event)">
+                    <div class="form-group">
+                        <label for="facultyId">Faculty ID</label>
+                        <input type="text" id="facultyId" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="facultyPassword">Password</label>
+                        <input type="password" id="facultyPassword" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="facultyOTP">One Time Password (OTP)</label>
+                        <div class="captcha-container">
+                            <input type="text" id="facultyOTP" placeholder="Enter OTP" required>
+                            <button type="button" class="btn btn-secondary" onclick="generateOTP('faculty')">Send
+                                OTP</button>
+                        </div>
+                        <small id="facultyOTPMsg" style="color: green; display: none;">
+                            OTP sent! (Check popup or SMS/email in real system)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Captcha</label>
+                        <div class="captcha-container">
+                            <div class="captcha-code" id="facultyCaptcha">X9D3</div>
+                            <button type="button" class="btn btn-secondary"
+                                onclick="generateCaptcha('facultyCaptcha')">Refresh</button>
+                        </div>
+                        <input type="text" id="facultyCaptchaInput" placeholder="Enter captcha" required>
+                    </div>
+
+                    <button type="submit" class="btn">Login</button>
+                    <button type="button" class="btn btn-secondary" onclick="showSection('home')">Back</button>
+
+                </form>
+            </div>
+        </section>
+
+        <!-- Admin Login Section -->
+        <section id="adminLogin" class="page-section">
+            <h2>Admin Login</h2>
+            <div class="login-form">
+                <form id="adminForm" onsubmit="loginAdmin(event)">
+                    <div class="form-group">
+                        <label for="adminId">Admin ID</label>
+                        <input type="text" id="adminId" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminOTP">One Time Password (OTP)</label>
+                        <div class="captcha-container">
+                            <input type="text" id="adminOTP" placeholder="Enter OTP" required>
+                            <button type="button" class="btn btn-secondary" onclick="generateOTP('admin')">Send
+                                OTP</button>
+                        </div>
+                        <small id="adminOTPMsg" style="color: green; display: none;">
+                            OTP sent! (Check popup or SMS/email in real system)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Captcha</label>
+                        <div class="captcha-container">
+                            <div class="captcha-code" id="adminCaptcha">L5F7</div>
+                            <button type="button" class="btn btn-secondary"
+                                onclick="generateCaptcha('adminCaptcha')">Refresh</button>
+                        </div>
+                        <input type="text" id="adminCaptchaInput" placeholder="Enter captcha" required>
+                    </div>
+
+                    <button type="submit" class="btn">Login</button>
+                    <button type="button" class="btn btn-secondary" onclick="showSection('home')">Back</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Student Dashboard -->
+        <section id="studentDashboard" class="page-section">
+            <div class="dashboard-header">
+                <h2>Student Dashboard</h2>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Personal Details</h3>
+                <table>
+                    <tr>
+                        <th>Registration No.</th>
+                        <td>ST2023157</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>Rahul Sharma</td>
+                    </tr>
+                    <tr>
+                        <th>Course</th>
+                        <td>B.Tech Computer Science</td>
+                    </tr>
+                    <tr>
+                        <th>Semester</th>
+                        <td>5th</td>
+                    </tr>
+                    <tr>
+                        <th>Contact</th>
+                        <td>rahul.sharma@example.com | 9876543210</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Academic Results</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Marks</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data Structures</td>
+                            <td>85/100</td>
+                            <td>A</td>
+                        </tr>
+                        <tr>
+                            <td>Algorithms</td>
+                            <td>78/100</td>
+                            <td>B+</td>
+                        </tr>
+                        <tr>
+                            <td>Database Systems</td>
+                            <td>92/100</td>
+                            <td>A+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Internship Details</h3>
+                <table>
+                    <tr>
+                        <th>Company</th>
+                        <td>Tech Solutions Inc.</td>
+                    </tr>
+                    <tr>
+                        <th>Duration</th>
+                        <td>June 2023 - August 2023</td>
+                    </tr>
+                    <tr>
+                        <th>Role</th>
+                        <td>Software Development Intern</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>Completed</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Fee Structure</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tuition Fee</td>
+                            <td>₹45,000</td>
+                            <td>15 Aug 2023</td>
+                            <td>Paid</td>
+                        </tr>
+                        <tr>
+                            <td>Hostel Fee</td>
+                            <td>₹25,000</td>
+                            <td>10 Aug 2023</td>
+                            <td>Paid</td>
+                        </tr>
+                        <tr>
+                            <td>Examination Fee</td>
+                            <td>₹2,500</td>
+                            <td>20 Sep 2023</td>
+                            <td>Pending</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Hostel Allocation</h3>
+                <table>
+                    <tr>
+                        <th>Hostel Name</th>
+                        <td>Boys Hostel Block B</td>
+                    </tr>
+                    <tr>
+                        <th>Room No.</th>
+                        <td>B-205</td>
+                    </tr>
+                    <tr>
+                        <th>Room Type</th>
+                        <td>2-Seater</td>
+                    </tr>
+                    <tr>
+                        <th>Allocation Period</th>
+                        <td>July 2023 - May 2024</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Faculty Dashboard -->
+        <section id="facultyDashboard" class="page-section">
+            <div class="dashboard-header">
+                <h2>Faculty Dashboard</h2>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Qualification Details</h3>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <td>Dr. Priya Singh</td>
+                    </tr>
+                    <tr>
+                        <th>Department</th>
+                        <td>Computer Science</td>
+                    </tr>
+                    <tr>
+                        <th>Designation</th>
+                        <td>Associate Professor</td>
+                    </tr>
+                    <tr>
+                        <th>Qualifications</th>
+                        <td>Ph.D. in Computer Science, M.Tech, B.Tech</td>
+                    </tr>
+                    <tr>
+                        <th>Specialization</th>
+                        <td>Artificial Intelligence, Machine Learning</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Class Schedule</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Batch</th>
+                            <th>Room No.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Monday</td>
+                            <td>9:00 - 10:00</td>
+                            <td>Machine Learning</td>
+                            <td>CS-5A</td>
+                            <td>B-102</td>
+                        </tr>
+                        <tr>
+                            <td>Tuesday</td>
+                            <td>11:00 - 12:30</td>
+                            <td>AI Fundamentals</td>
+                            <td>CS-4B</td>
+                            <td>A-205</td>
+                        </tr>
+                        <tr>
+                            <td>Wednesday</td>
+                            <td>10:00 - 11:30</td>
+                            <td>Machine Learning Lab</td>
+                            <td>CS-5A</td>
+                            <td>Lab-3</td>
+                        </tr>
+                        <tr>
+                            <td>Thursday</td>
+                            <td>2:00 - 3:30</td>
+                            <td>Research Methodology</td>
+                            <td>M.Tech</td>
+                            <td>C-101</td>
+                        </tr>
+                        <tr>
+                            <td>Friday</td>
+                            <td>9:30 - 11:00</td>
+                            <td>AI Fundamentals</td>
+                            <td>CS-4C</td>
+                            <td>B-103</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Student Results - Batch CS-5A</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll No.</th>
+                            <th>Name</th>
+                            <th>Machine Learning</th>
+                            <th>Data Science</th>
+                            <th>Algorithms</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CS20001</td>
+                            <td>Amit Kumar</td>
+                            <td>85</td>
+                            <td>78</td>
+                            <td>92</td>
+                        </tr>
+                        <tr>
+                            <td>CS20002</td>
+                            <td>Neha Singh</td>
+                            <td>92</td>
+                            <td>88</td>
+                            <td>95</td>
+                        </tr>
+                        <tr>
+                            <td>CS20003</td>
+                            <td>Rajesh Patel</td>
+                            <td>76</td>
+                            <td>82</td>
+                            <td>79</td>
+                        </tr>
+                        <tr>
+                            <td>CS20004</td>
+                            <td>Priya Verma</td>
+                            <td>89</td>
+                            <td>91</td>
+                            <td>87</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard -->
+        <section id="adminDashboard" class="page-section">
+            <div class="dashboard-header">
+                <h2>Admin Dashboard</h2>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="admin-controls">
+                <button class="btn">Add New Student</button>
+                <button class="btn">Update Student Records</button>
+                <button class="btn">Manage Faculty</button>
+                <button class="btn">Generate Reports</button>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Student Management</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reg. No.</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Semester</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ST2023157</td>
+                            <td>Rahul Sharma</td>
+                            <td>B.Tech CS</td>
+                            <td>5</td>
+                            <td>Active</td>
+                            <td>
+                                <button class="btn">Edit</button>
+                                <button class="btn btn-secondary">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ST2022189</td>
+                            <td>Priya Patel</td>
+                            <td>B.Tech ECE</td>
+                            <td>7</td>
+                            <td>Active</td>
+                            <td>
+                                <button class="btn">Edit</button>
+                                <button class="btn btn-secondary">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ST2024098</td>
+                            <td>Amit Kumar</td>
+                            <td>B.Tech ME</td>
+                            <td>3</td>
+                            <td>Active</td>
+                            <td>
+                                <button class="btn">Edit</button>
+                                <button class="btn btn-secondary">View</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Fee Management</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Total Fees</th>
+                            <th>Paid</th>
+                            <th>Due</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ST2023157</td>
+                            <td>Rahul Sharma</td>
+                            <td>₹72,500</td>
+                            <td>₹70,000</td>
+                            <td>₹2,500</td>
+                            <td>Partial</td>
+                        </tr>
+                        <tr>
+                            <td>ST2022189</td>
+                            <td>Priya Patel</td>
+                            <td>₹72,500</td>
+                            <td>₹72,500</td>
+                            <td>₹0</td>
+                            <td>Paid</td>
+                        </tr>
+                        <tr>
+                            <td>ST2024098</td>
+                            <td>Amit Kumar</td>
+                            <td>₹72,500</td>
+                            <td>₹50,000</td>
+                            <td>₹22,500</td>
+                            <td>Partial</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Hostel Management</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hostel</th>
+                            <th>Total Capacity</th>
+                            <th>Occupied</th>
+                            <th>Vacant</th>
+                            <th>Utilization</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Boys Hostel A</td>
+                            <td>120</td>
+                            <td>115</td>
+                            <td>5</td>
+                            <td>95.8%</td>
+                        </tr>
+                        <tr>
+                            <td>Boys Hostel B</td>
+                            <td>150</td>
+                            <td>142</td>
+                            <td>8</td>
+                            <td>94.7%</td>
+                        </tr>
+                        <tr>
+                            <td>Girls Hostel A</td>
+                            <td>100</td>
+                            <td>95</td>
+                            <td>5</td>
+                            <td>95%</td>
+                        </tr>
+                        <tr>
+                            <td>Girls Hostel B</td>
+                            <td>120</td>
+                            <td>118</td>
+                            <td>2</td>
+                            <td>98.3%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 College ERP Portal. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
