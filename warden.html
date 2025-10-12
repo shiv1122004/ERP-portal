@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" /></head>
+  <style>
+       * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+   .dashboard-container {
+       max-width: 1400px;
+       margin: 0 auto;
+   }
+
+   .dashboard-header {
+       background: white;
+       padding: 20px 30px;
+       border-radius: 10px;
+       margin-bottom: 20px;
+       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+   }
+
+   .dashboard-header h1 {
+       color: #1a4b8c;
+       font-size: 2rem;
+   }
+
+   .btn {
+       background: #1a4b8c;
+       color: white;
+       border: none;
+       padding: 12px 24px;
+       border-radius: 6px;
+       cursor: pointer;
+       font-size: 1rem;
+       transition: 0.3s;
+   }
+
+   .btn:hover {
+       background: #153a70;
+   }
+
+   .stats-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+       gap: 20px;
+       margin-bottom: 20px;
+   }
+
+   .stat-card {
+       background: white;
+       padding: 25px;
+       border-radius: 10px;
+       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+       text-align: center;
+       transition: 0.3s;
+   }
+
+   .stat-card:hover {
+       transform: translateY(-5px);
+       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+   }
+
+   .stat-card h3 {
+       color: #666;
+       font-size: 0.9rem;
+       margin-bottom: 10px;
+       text-transform: uppercase;
+   }
+
+   .stat-card .number {
+       color: #476998;
+       font-size: 2.5rem;
+       font-weight: bold;
+   }
+
+   .chart-container {
+       background: white;
+       padding: 25px;
+       border-radius: 10px;
+       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+       margin-bottom: 20px;
+   }
+
+   .chart-container h2 {
+       color: #1a4b8c;
+       margin-bottom: 20px;
+       padding-bottom: 10px;
+       border-bottom: 2px solid #f0f0f0;
+   }
+
+   .charts-row {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+       gap: 20px;
+       margin-bottom: 20px;
+   }
+
+   .table-container {
+       background: white;
+       padding: 25px;
+       border-radius: 10px;
+       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+       margin-bottom: 20px;
+       overflow-x: auto;
+   }
+
+   table {
+       width: 100%;
+       border-collapse: collapse;
+   }
+
+   table th,
+   table td {
+       padding: 12px;
+       text-align: left;
+       border-bottom: 1px solid #eee;
+   }
+
+   table th {
+       background-color: #f8f9fa;
+       color: #1a4b8c;
+       font-weight: 600;
+   }
+
+   .status-badge {
+       padding: 5px 12px;
+       border-radius: 20px;
+       font-size: 0.85rem;
+       font-weight: 600;
+   }
+
+   .status-resolved {
+       background: #d4edda;
+       color: #155724;
+   }
+
+   .status-pending {
+       background: #fff3cd;
+       color: #856404;
+   }
+
+   .contact-info {
+       display: flex;
+       align-items: center;
+       gap: 5px;
+   }
+
+   @media (max-width: 768px) {
+       .charts-row {
+           grid-template-columns: 1fr;
+       }
+
+       .dashboard-header {
+           flex-direction: column;
+           gap: 15px;
+       }
+   }
+  </style>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Warden Dashboard - Hostel Management</h1>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <div class="number">485</div>
+            </div>
+            <div class="stat-card">
+                <h3>Occupied Rooms</h3>
+                <div class="number">242</div>
+            </div>
+            <div class="stat-card">
+                <h3>Vacant Rooms</h3>
+                <div class="number">18</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Issues</h3>
+                <div class="number">23</div>
+            </div>
+            <div class="stat-card">
+                <h3>Issues Resolved</h3>
+                <div class="number">15</div>
+            </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="charts-row">
+            <div class="chart-container">
+                <h2>Hostel Occupancy Overview</h2>
+                <canvas id="occupancyChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h2>Room Status Distribution</h2>
+                <canvas id="roomStatusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="charts-row">
+            <div class="chart-container">
+                <h2>Issues Status</h2>
+                <canvas id="issuesChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h2>Students per Hostel Block</h2>
+                <canvas id="blockChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Registered Issues Table -->
+        <div class="table-container">
+            <h2>Registered Issues</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Issue ID</th>
+                        <th>Hostel Block</th>
+                        <th>Room No.</th>
+                        <th>Issue Type</th>
+                        <th>Reported Date</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ISS001</td>
+                        <td>Block A</td>
+                        <td>A-205</td>
+                        <td>Plumbing</td>
+                        <td>2024-10-01</td>
+                        <td><span class="status-badge status-resolved">Resolved</span></td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>ISS002</td>
+                        <td>Block B</td>
+                        <td>B-112</td>
+                        <td>Electrical</td>
+                        <td>2024-10-03</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>ISS003</td>
+                        <td>Block C</td>
+                        <td>C-308</td>
+                        <td>Furniture</td>
+                        <td>2024-10-02</td>
+                        <td><span class="status-badge status-resolved">Resolved</span></td>
+                        <td>Low</td>
+                    </tr>
+                    <tr>
+                        <td>ISS004</td>
+                        <td>Block A</td>
+                        <td>A-145</td>
+                        <td>Internet</td>
+                        <td>2024-10-04</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>ISS005</td>
+                        <td>Block D</td>
+                        <td>D-201</td>
+                        <td>AC Repair</td>
+                        <td>2024-09-28</td>
+                        <td><span class="status-badge status-resolved">Resolved</span></td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>ISS006</td>
+                        <td>Block B</td>
+                        <td>B-340</td>
+                        <td>Door Lock</td>
+                        <td>2024-10-05</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>ISS007</td>
+                        <td>Block C</td>
+                        <td>C-156</td>
+                        <td>Water Supply</td>
+                        <td>2024-10-01</td>
+                        <td><span class="status-badge status-resolved">Resolved</span></td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>ISS008</td>
+                        <td>Block A</td>
+                        <td>A-289</td>
+                        <td>Window Repair</td>
+                        <td>2024-10-06</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>Low</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Caretaker Information -->
+        <div class="table-container">
+            <h2>Hostel Caretaker Information</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hostel Block</th>
+                        <th>Caretaker Name</th>
+                        <th>Mobile Number</th>
+                        <th>Duty Hours</th>
+                        <th>Responsibility Area</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Block A (Boys)</td>
+                        <td>Rajesh Kumar</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button"></i> +91 98765-43210</td>
+                        <td>6 AM - 2 PM</td>
+                        <td>Ground & 1st Floor</td>
+                    </tr>
+                    <tr>
+                        <td>Block A (Boys)</td>
+                        <td>Suresh Patel</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button"></i> +91 98765-43211</td>
+                        <td>2 PM - 10 PM</td>
+                        <td>2nd & 3rd Floor</td>
+                    </tr>
+                    <tr>
+                        <td>Block B (Boys)</td>
+                        <td>Amit Singh</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button"></i> +91 98765-43212</td>
+                        <td>6 AM - 2 PM</td>
+                        <td>All Floors</td>
+                    </tr>
+                    <tr>
+                        <td>Block B (Boys)</td>
+                        <td>Vijay Sharma</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button"></i> +91 98765-43213</td>
+                        <td>2 PM - 10 PM</td>
+                        <td>All Floors</td>
+                    </tr>
+                    <tr>
+                        <td>Block C (Girls)</td>
+                        <td>Sunita Devi</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button"></i> +91 98765-43214</td>
+                        <td>6 AM - 2 PM</td>
+                        <td>Ground & 1st Floor</td>
+                    </tr>
+                    <tr>
+                        <td>Block C (Girls)</td>
+                        <td>Meena Rani</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button"></i> +91 98765-43215</td>
+                        <td>2 PM - 10 PM</td>
+                        <td>2nd & 3rd Floor</td>
+                    </tr>
+                    <tr>
+                        <td>Block D (Girls)</td>
+                        <td>Rekha Verma</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button" ></i> +91 98765-43216</td>
+                        <td>6 AM - 2 PM</td>
+                        <td>All Floors</td>
+                    </tr>
+                    <tr>
+                        <td>Block D (Girls)</td>
+                        <td>Anjali Gupta</td>
+                        <td class="contact-info"><i class="fa-solid fa-mobile-screen-button"></i> +91 98765-43217</td>
+                        <td>2 PM - 10 PM</td>
+                        <td>All Floors</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script >
+        
+        // Occupancy Chart
+        const occupancyCtx = document.getElementById('occupancyChart').getContext('2d');
+        new Chart(occupancyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Block A', 'Block B', 'Block C', 'Block D'],
+                datasets: [{
+                    label: 'Occupied',
+                    data: [115, 142, 95, 118],
+                    backgroundColor: '#1a4b8c'
+                }, {
+                    label: 'Vacant',
+                    data: [5, 8, 5, 2],
+                    backgroundColor: '#ff6384'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Room Status Chart
+        const roomStatusCtx = document.getElementById('roomStatusChart').getContext('2d');
+        new Chart(roomStatusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Occupied', 'Vacant', 'Under Maintenance'],
+                datasets: [{
+                    data: [242, 18, 3],
+                    backgroundColor: ['#1a4b8c', '#36a2eb', '#ff6384']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Issues Chart
+        const issuesCtx = document.getElementById('issuesChart').getContext('2d');
+        new Chart(issuesCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Resolved', 'Pending', 'In Progress'],
+                datasets: [{
+                    data: [15, 5, 3],
+                    backgroundColor: ['#4caf50', '#ff9800', '#2196f3']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Block Chart
+        const blockCtx = document.getElementById('blockChart').getContext('2d');
+        new Chart(blockCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Block A (Boys)', 'Block B (Boys)', 'Block C (Girls)', 'Block D (Girls)'],
+                datasets: [{
+                    label: 'Number of Students',
+                    data: [115, 142, 110, 118],
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#4facfe']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+         // Logout function
+        function logout() {
+            showSection('home');
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show the requested section
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgb(149, 177, 232);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #142673;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 1em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 20px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            margin: 0 5px;
+            font-size: 0.9em;
+            background: #667eea;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            padding-left: 40px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            /* background: #f0f0f0; */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #5470ed 0%, #432264 100%);
+            color: white;
+        }
+       
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Library Management System</h1>
+            <p>Manage books, students, and track library activities</p>
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <div class="stat-card">
+                <h3>Total Books Issued </h3>
+                <div class="number" id="totalIssued">2</div>
+            </div>
+            <div class="stat-card">
+                <h3>Books Returned</h3>
+                <div class="number" id="totalReturned">1</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Returns</h3>
+                <div class="number" id="pendingReturns">1</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Students</h3>
+                <div class="number" id="activeStudents">1</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab" onclick="switchTab('issue')">➕ Issue Book</button>
+            <button class="tab" onclick="switchTab('return')">↩️ Return Book</button>
+            <button class="tab" onclick="switchTab('records')">📋 All Records</button>
+        </div>
+
+        <div id="dashboard" class="tab-content active">
+            <div class="charts-grid">
+                <div class="card">
+                    <h2>Books by Branch</h2>
+                    <div class="chart-container">
+                        <canvas id="branchChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Monthly Trend</h2>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Book Categories Distribution</h2>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="issue" class="tab-content">
+            <div class="card">
+                <h2>Issue New Book</h2>
+                <form id="issueForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Student Name *</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Student ID *</label>
+                            <input type="text" id="studentId" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Branch *</label>
+                            <select id="branch" required>
+                                <option value="">Select Branch</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Mechanical">Mechanical</option>
+                                <option value="Civil">Civil</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="IT">Information Technology</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Year *</label>
+                            <select id="year" required>
+                                <option value="">Select Year</option>
+                                <option value="1st">1st Year</option>
+                                <option value="2nd">2nd Year</option>
+                                <option value="3rd">3rd Year</option>
+                                <option value="4th">4th Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Book Title *</label>
+                            <input type="text" id="bookTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Book ID *</label>
+                            <input type="text" id="bookId" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select id="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Science">Science</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Fiction">Fiction</option>
+                                <option value="Reference">Reference</option>
+                                <option value="Technology">Technology</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Issue Date *</label>
+                            <input type="date" id="issueDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="notes" rows="3" placeholder="Additional notes..."></textarea>
+                    </div>
+                    <button type="submit">Issue Book</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="return" class="tab-content">
+            <div class="card">
+                <h2>Return Book</h2>
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchReturn" placeholder="Search by Student ID or Book ID...">
+                </div>
+                <div id="returnList"></div>
+            </div>
+        </div>
+
+        <div id="records" class="tab-content">
+            <div class="card">
+                <h2>All Records</h2>
+                <div class="form-row" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Filter by Branch</label>
+                        <select id="filterBranch" onchange="filterRecords()">
+                            <option value="">All Branches</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="IT">Information Technology</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Filter by Status</label>
+                        <select id="filterStatus" onchange="filterRecords()">
+                            <option value="">All Status</option>
+                            <option value="Issued">Issued</option>
+                            <option value="Returned">Returned</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchRecords" placeholder="Search records..." onkeyup="filterRecords()">
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="recordsTable">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Branch</th>
+                                <th>Book Title</th>
+                                <th>Book ID</th>
+                                <th>Issue Date</th>
+                                <th>Return Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let records = [];
+        let branchChart, trendChart, categoryChart;
+
+        // Initialize with some sample data
+        function initSampleData() {
+            const sampleRecords = [
+                {
+                    studentName: "Rajesh Kumar",
+                    studentId: "CS001",
+                    branch: "Computer Science",
+                    year: "3rd",
+                    bookTitle: "Data Structures and Algorithms",
+                    bookId: "B001",
+                    category: "Engineering",
+                    issueDate: "2025-09-15",
+                    returnDate: "2025-10-01",
+                    status: "Returned",
+                    notes: ""
+                },
+                {
+                    studentName: "Priya Singh",
+                    studentId: "EC002",
+                    branch: "Electronics",
+                    year: "2nd",
+                    bookTitle: "Digital Electronics",
+                    bookId: "B002",
+                    category: "Engineering",
+                    issueDate: "2025-09-20",
+                    returnDate: "",
+                    status: "Issued",
+                    notes: ""
+                },
+
+                {
+                    studentName: "Amisha Kumari",
+                    studentId: "EC009",
+                    branch: "Electronics",
+                    year: "2nd",
+                    bookTitle: "Digital Electronics",
+                    bookId: "B002",
+                    category: "Engineering",
+                    issueDate: "2025-06-20",
+                    returnDate: "",
+                    status: "Issued",
+                    notes: ""
+                },
+
+                {
+                    studentName: "Hariom Kumar",
+                    studentId: "CS009",
+                    branch: "Computer Science",
+                    year: "2nd",
+                    bookTitle: "Data Structure",
+                    bookId: "B002",
+                    category: "Engineering",
+                    issueDate: "2025-06-12",
+                    returnDate: "",
+                    status: "Issued",
+                    notes: ""
+                }
+            ];
+            records = sampleRecords;
+            updateDashboard();
+        }
+
+        // Set today's date as default
+        document.getElementById('issueDate').valueAsDate = new Date();
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            if (tabName === 'return') {
+                displayReturnList();
+            } else if (tabName === 'records') {
+                displayRecords();
+            }
+        }
+
+        // Issue book form
+        document.getElementById('issueForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const record = {
+                studentName: document.getElementById('studentName').value,
+                studentId: document.getElementById('studentId').value,
+                branch: document.getElementById('branch').value,
+                year: document.getElementById('year').value,
+                bookTitle: document.getElementById('bookTitle').value,
+                bookId: document.getElementById('bookId').value,
+                category: document.getElementById('category').value,
+                issueDate: document.getElementById('issueDate').value,
+                returnDate: "",
+                status: "Issued",
+                notes: document.getElementById('notes').value
+            };
+            
+            records.push(record);
+            updateDashboard();
+            this.reset();
+            document.getElementById('issueDate').valueAsDate = new Date();
+            alert('Book issued successfully!');
+        });
+
+        // Update dashboard
+        function updateDashboard() {
+            const totalIssued = records.length;
+            const returned = records.filter(r => r.status === 'Returned').length;
+            const pending = totalIssued - returned;
+            const activeStudents = new Set(records.filter(r => r.status === 'Issued').map(r => r.studentId)).size;
+            
+            document.getElementById('totalIssued').textContent = totalIssued;
+            document.getElementById('totalReturned').textContent = returned;
+            document.getElementById('pendingReturns').textContent = pending;
+            document.getElementById('activeStudents').textContent = activeStudents;
+            
+            updateCharts();
+        }
+
+        // Update charts
+        function updateCharts() {
+            const branchData = {};
+            const categoryData = {};
+            
+            records.forEach(r => {
+                branchData[r.branch] = (branchData[r.branch] || 0) + 1;
+                categoryData[r.category] = (categoryData[r.category] || 0) + 1;
+            });
+            
+            // Branch pie chart
+            if (branchChart) branchChart.destroy();
+            const branchCtx = document.getElementById('branchChart').getContext('2d');
+            branchChart = new Chart(branchCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(branchData),
+                    datasets: [{
+                        data: Object.values(branchData),
+                        backgroundColor: [
+                            '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                            '#43e97b', '#fa709a', '#fee140'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Category bar chart
+            if (categoryChart) categoryChart.destroy();
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            categoryChart = new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(categoryData),
+                    datasets: [{
+                        label: 'Books',
+                        data: Object.values(categoryData),
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Trend line chart
+            if (trendChart) trendChart.destroy();
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Books Issued',
+                        data: [12, 19, 15, 25, 22, 30, 28, 35, 32, records.length],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Display return list
+        function displayReturnList() {
+            const list = document.getElementById('returnList');
+            const issuedBooks = records.filter(r => r.status === 'Issued');
+            
+            if (issuedBooks.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No pending returns</p>';
+                return;
+            }
+            
+            let html = '<table><thead><tr><th>Student</th><th>Book</th><th>Issue Date</th><th>Action</th></tr></thead><tbody>';
+            issuedBooks.forEach((r, idx) => {
+                html += `<tr>
+                    <td>${r.studentName} (${r.studentId})</td>
+                    <td>${r.bookTitle} (${r.bookId})</td>
+                    <td>${r.issueDate}</td>
+                    <td><button class="action-btn" onclick="returnBook(${records.indexOf(r)})">Return</button></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            list.innerHTML = html;
+        }
+
+        // Return book
+        function returnBook(idx) {
+            records[idx].status = 'Returned';
+            records[idx].returnDate = new Date().toISOString().split('T')[0];
+            updateDashboard();
+            displayReturnList();
+            alert('Book returned successfully!');
+        }
+
+        // Display all records
+        function displayRecords() {
+            filterRecords();
+        }
+
+        // Filter records
+        function filterRecords() {
+            const branch = document.getElementById('filterBranch').value;
+            const status = document.getElementById('filterStatus').value;
+            const search = document.getElementById('searchRecords').value.toLowerCase();
+            
+            let filtered = records.filter(r => {
+                return (!branch || r.branch === branch) &&
+                       (!status || r.status === status) &&
+                       (!search || r.studentName.toLowerCase().includes(search) ||
+                        r.studentId.toLowerCase().includes(search) ||
+                        r.bookTitle.toLowerCase().includes(search) ||
+                        r.bookId.toLowerCase().includes(search));
+            });
+            
+            const tbody = document.getElementById('recordsBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #999;">No records found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map((r, idx) => `
+                <tr>
+                    <td>${r.studentName}</td>
+                    <td>${r.studentId}</td>
+                    <td>${r.branch}</td>
+                    <td>${r.bookTitle}</td>
+                    <td>${r.bookId}</td>
+                    <td>${r.issueDate}</td>
+                    <td>${r.returnDate || '-'}</td>
+                    <td><span style="color: ${r.status === 'Issued' ? '#f39c12' : '#27ae60'}; font-weight: 600;">${r.status}</span></td>
+                    <td>
+                        ${r.status === 'Issued' ? `<button class="action-btn" onclick="returnBook(${records.indexOf(r)})">Return</button>` : ''}
+                        <button class="action-btn delete-btn" onclick="deleteRecord(${records.indexOf(r)})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Delete record
+        function deleteRecord(idx) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                records.splice(idx, 1);
+                updateDashboard();
+                displayRecords();
+            }
+        }
+
+        // Search in return list
+        document.getElementById('searchReturn').addEventListener('keyup', function() {
+            const search = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#returnList table tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        });
+
+        // Initialize
+        initSampleData();
+    </script>
+</body>
+</html>

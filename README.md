@@ -1,2 +1,2 @@
-# ERP-portal
-Erp portal for the internal hackathon and SIH 
+# ERP-system
+College ERP  Portal

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Director Dashboard - College Information System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .stat-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9ff;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .contact-card {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .contact-info {
+            color: #666;
+            font-size: 0.95em;
+            margin: 3px 0;
+        }
+
+        .section-full {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .year-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .year-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Director Dashboard</h1>
+            <p class="subtitle">Comprehensive College Information System</p>
+            <p class="subtitle" style="margin-top: 5px; font-size: 0.9em;">Academic Year 2024-25</p>
+        </header>
+
+        <!-- Student Statistics -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">Total Students</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Enrolled Students</span>
+                    <span class="stat-value">3,450</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Male Students</span>
+                    <span class="stat-value">2,070 (60%)</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Female Students</span>
+                    <span class="stat-value">1,380 (40%)</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📚</div>
+                    <div class="card-title">Active Courses</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Computer Science & Engineering</span>
+                    <span class="stat-value">850</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Electronics & Communication</span>
+                    <span class="stat-value">720</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Mechanical Engineering</span>
+                    <span class="stat-value">650</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Civil Engineering</span>
+                    <span class="stat-value">580</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Electrical Engineering</span>
+                    <span class="stat-value">650</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🏠</div>
+                    <div class="card-title">Hostel Occupancy</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Capacity</span>
+                    <span class="stat-value">2,400</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Occupied</span>
+                    <span class="stat-value">2,180</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Overall Occupancy</span>
+                    <span class="stat-value">91%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="hostelChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Branch-wise Student Distribution -->
+        <div class="section-full">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                <div class="card-title">Branch-wise Student Distribution</div>
+            </div>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="branchChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Hostel Details -->
+        <div class="section-full">
+            <div class="card-header">
+                <div class="card-icon">🏢</div>
+                <div class="card-title">Hostel Statistics</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hostel Name</th>
+                        <th>Type</th>
+                        <th>Capacity</th>
+                        <th>Occupied</th>
+                        <th>Occupancy Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Hostel A - Boys</td>
+                        <td>Boys</td>
+                        <td>600</td>
+                        <td>580</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 97%;">97%</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Hostel B - Boys</td>
+                        <td>Boys</td>
+                        <td>600</td>
+                        <td>540</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%;">90%</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Hostel C - Girls</td>
+                        <td>Girls</td>
+                        <td>500</td>
+                        <td>480</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 96%;">96%</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Hostel D - Girls</td>
+                        <td>Girls</td>
+                        <td>400</td>
+                        <td>350</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87.5%;">87.5%</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Hostel E - PG Block</td>
+                        <td>Mixed</td>
+                        <td>300</td>
+                        <td>230</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 77%;">77%</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Placement Statistics -->
+        <div class="section-full">
+            <div class="card-header">
+                <div class="card-icon">💼</div>
+                <div class="card-title">Placement Performance Trends</div>
+            </div>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="placementTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Branch-wise Placement Rate -->
+        <div class="section-full">
+            <div class="card-header">
+                <div class="card-icon">🎯</div>
+                <div class="card-title">Branch-wise Placement Rate</div>
+            </div>
+            
+            <div class="year-section">
+                <div class="year-title">Academic Year 2023-24</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Branch</th>
+                            <th>Total Students</th>
+                            <th>Placed</th>
+                            <th>Placement Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Computer Science & Engineering</td>
+                            <td>210</td>
+                            <td>198</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 94%;">94%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Electronics & Communication</td>
+                            <td>180</td>
+                            <td>162</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 90%;">90%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Mechanical Engineering</td>
+                            <td>160</td>
+                            <td>136</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 85%;">85%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Civil Engineering</td>
+                            <td>145</td>
+                            <td>116</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 80%;">80%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Electrical Engineering</td>
+                            <td>160</td>
+                            <td>136</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 85%;">85%</div></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="year-section">
+                <div class="year-title">Academic Year 2022-23</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Branch</th>
+                            <th>Total Students</th>
+                            <th>Placed</th>
+                            <th>Placement Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Computer Science & Engineering</td>
+                            <td>205</td>
+                            <td>189</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 92%;">92%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Electronics & Communication</td>
+                            <td>175</td>
+                            <td>154</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 88%;">88%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Mechanical Engineering</td>
+                            <td>155</td>
+                            <td>124</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 80%;">80%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Civil Engineering</td>
+                            <td>140</td>
+                            <td>105</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 75%;">75%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Electrical Engineering</td>
+                            <td>155</td>
+                            <td>124</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 80%;">80%</div></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="year-section">
+                <div class="year-title">Academic Year 2021-22</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Branch</th>
+                            <th>Total Students</th>
+                            <th>Placed</th>
+                            <th>Placement Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Computer Science & Engineering</td>
+                            <td>200</td>
+                            <td>178</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 89%;">89%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Electronics & Communication</td>
+                            <td>170</td>
+                            <td>144</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 85%;">85%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Mechanical Engineering</td>
+                            <td>150</td>
+                            <td>113</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 75%;">75%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Civil Engineering</td>
+                            <td>135</td>
+                            <td>95</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 70%;">70%</div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Electrical Engineering</td>
+                            <td>150</td>
+                            <td>113</td>
+                            <td><div class="progress-bar"><div class="progress-fill" style="width: 75%;">75%</div></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Contact Details -->
+        <div class="section-full">
+            <div class="card-header">
+                <div class="card-icon">📞</div>
+                <div class="card-title">HODs & Deans Contact Details</div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="contact-card">
+                    <div class="contact-name">Dr. Rajesh Kumar</div>
+                    <div class="contact-info">Dean - Computer Science & Engineering</div>
+                    <div class="contact-info">📧 rajesh.kumar@college.edu</div>
+                    <div class="contact-info">📱 +91 98765 43210</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-name">Dr. Priya Sharma</div>
+                    <div class="contact-info">HOD - Electronics & Communication</div>
+                    <div class="contact-info">📧 priya.sharma@college.edu</div>
+                    <div class="contact-info">📱 +91 98765 43211</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-name">Dr. Amit Patel</div>
+                    <div class="contact-info">Dean - Mechanical Engineering</div>
+                    <div class="contact-info">📧 amit.patel@college.edu</div>
+                    <div class="contact-info">📱 +91 98765 43212</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-name">Dr. Sunita Verma</div>
+                    <div class="contact-info">HOD - Civil Engineering</div>
+                    <div class="contact-info">📧 sunita.verma@college.edu</div>
+                    <div class="contact-info">📱 +91 98765 43213</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-name">Dr. Vijay Singh</div>
+                    <div class="contact-info">Dean - Electrical Engineering</div>
+                    <div class="contact-info">📧 vijay.singh@college.edu</div>
+                    <div class="contact-info">📱 +91 98765 43214</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hostel Wardens Contact -->
+        <div class="section-full">
+            <div class="card-header">
+                <div class="card-icon">🏠</div>
+                <div class="card-title">Hostel Wardens Contact Details</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hostel Name</th>
+                        <th>Warden Name</th>
+                        <th>Students</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Hostel A - Boys</td>
+                        <td>Mr. Arun Mehta</td>
+                        <td>580</td>
+                        <td>arun.mehta@college.edu</td>
+                        <td>+91 98765 43215</td>
+                    </tr>
+                    <tr>
+                        <td>Hostel B - Boys</td>
+                        <td>Mr. Karan Joshi</td>
+                        <td>540</td>
+                        <td>karan.joshi@college.edu</td>
+                        <td>+91 98765 43216</td>
+                    </tr>
+                    <tr>
+                        <td>Hostel C - Girls</td>
+                        <td>Mrs. Neha Gupta</td>
+                        <td>480</td>
+                        <td>neha.gupta@college.edu</td>
+                        <td>+91 98765 43217</td>
+                    </tr>
+                    <tr>
+                        <td>Hostel D - Girls</td>
+                        <td>Mrs. Kavita Reddy</td>
+                        <td>350</td>
+                        <td>kavita.reddy@college.edu</td>
+                        <td>+91 98765 43218</td>
+                    </tr>
+                    <tr>
+                        <td>Hostel E - PG Block</td>
+                        <td>Dr. Suresh Nair</td>
+                        <td>230</td>
+                        <td>suresh.nair@college.edu</td>
+                        <td>+91 98765 43219</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Gender Distribution Chart
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        new Chart(genderCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Male', 'Female'],
+                datasets: [{
+                    data: [2070, 1380],
+                    backgroundColor: ['#667eea', '#764ba2'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Hostel Occupancy Chart
+        const hostelCtx = document.getElementById('hostelChart').getContext('2d');
+        new Chart(hostelCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Hostel A', 'Hostel B', 'Hostel C', 'Hostel D', 'Hostel E'],
+                datasets: [{
+                    label: 'Occupied',
+                    data: [580, 540, 480, 350, 230],
+                    backgroundColor: '#667eea'
+                }, {
+                    label: 'Vacant',
+                    data: [20, 60, 20, 50, 70],
+                    backgroundColor: '#e0e0e0'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Branch Distribution Chart
+        const branchCtx = document.getElementById('branchChart').getContext('2d');
+        new Chart(branchCtx, {
+            type: 'bar',
+            data: {
+                labels: ['CSE', 'ECE', 'Mechanical', 'Civil', 'Electrical'],
+                datasets: [{
+                    label: 'Number of Students',
+                    data: [850, 720, 650, 580, 650],
+                    backgroundColor: [
+                        '#667eea',
+                        '#764ba2',
+                        '#f093fb',
+                        '#4facfe',
+                        '#43e97b'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Placement Trends Chart
+        const placementTrendCtx = document.getElementById('placementTrendChart').getContext('2d');
+        new Chart(placementTrendCtx, {
+            type: 'line',
+            data: {
+                labels: ['2019-20', '2020-21', '2021-22', '2022-23', '2023-24'],
+                datasets: [{
+                    label: 'CSE',
+                    data: [85, 87, 89, 92, 94],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'ECE',
+                    data: [80, 83, 85, 88, 90],
+                    borderColor: '#764ba2',
+                    backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Mechanical',
+                    data: [68, 72, 75, 80, 85],
+                    borderColor: '#f093fb',
+                    backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Civil',
+                    data: [62, 65, 70, 75, 80],
+                    borderColor: '#4facfe',
+                    backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Electrical',
+                    data: [70, 72, 75, 80, 85],
+                    borderColor: '#43e97b',
+                    backgroundColor: 'rgba(67, 233, 123, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            margin: 100px auto;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #667eea;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-card p {
+            margin: 8px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .badge-pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        .badge-resolved {
+            background: #27ae60;
+            color: white;
+        }
+
+        .report-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .stat-card p {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="login-container" id="loginScreen">
+            <h1>🏢 Hostel Management System</h1>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <button class="btn-full" onclick="login()">Login</button>
+            <p style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+                Demo: warden1/pass123 or warden2/pass456
+            </p>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="header">
+                <h1>Hostel Management Dashboard</h1>
+                <button onclick="logout()">Logout</button>
+            </div>
+
+            <div class="section">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('profile')">My Profile</button>
+                    <button class="tab" onclick="switchTab('students')">Students</button>
+                    <button class="tab" onclick="switchTab('issues')">Issues</button>
+                    <button class="tab" onclick="switchTab('report')">Report</button>
+                </div>
+
+                <!-- Profile Tab -->
+                <div class="tab-content active" id="profile">
+                    <h2>Warden Profile</h2>
+                    <div class="info-card" id="wardenInfo"></div>
+                </div>
+
+                <!-- Students Tab -->
+                <div class="tab-content" id="students">
+                    <h2>Students Management</h2>
+                    <button onclick="openAddStudentModal()">+ Add New Student</button>
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Guardian Phone</th>
+                                <th>Room No.</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Issues Tab -->
+                <div class="tab-content" id="issues">
+                    <h2>Student Issues</h2>
+                    <button onclick="openAddIssueModal()">+ Add New Issue</button>
+                    <table id="issuesTable">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Issue</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="issuesBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Report Tab -->
+                <div class="tab-content" id="report">
+                    <h2>Issues Report</h2>
+                    <div class="report-section">
+                        <div class="report-stats" id="reportStats"></div>
+                        <h3 style="margin-top: 30px;">Detailed Report</h3>
+                        <div id="detailedReport"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="studentModalTitle">Add Student</h2>
+                <span class="close" onclick="closeModal('studentModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" id="studentName">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="studentPhone">
+            </div>
+            <div class="form-group">
+                <label>Guardian Phone</label>
+                <input type="tel" id="guardianPhone">
+            </div>
+            <div class="form-group">
+                <label>Room Number</label>
+                <input type="text" id="roomNumber">
+            </div>
+            <button class="btn-full" onclick="saveStudent()">Save Student</button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Issue Modal -->
+    <div class="modal" id="issueModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="issueModalTitle">Add Issue</h2>
+                <span class="close" onclick="closeModal('issueModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" id="issueStudentName">
+            </div>
+            <div class="form-group">
+                <label>Issue Description</label>
+                <textarea id="issueDescription" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="issueDate">
+            </div>
+            <button class="btn-full" onclick="saveIssue()">Save Issue</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let wardens = {
+            warden1: {
+                username: 'warden1',
+                password: 'pass123',
+                name: 'John Smith',
+                email: 'john.smith@hostel.edu',
+                address: '123 University Avenue, Campus Area',
+                phone: '+1-555-0101',
+                hostel: 'Girls Hostel A'
+            },
+            warden2: {
+                username: 'warden2',
+                password: 'pass456',
+                name: 'Sarah Johnson',
+                email: 'sarah.johnson@hostel.edu',
+                address: '456 College Road, Campus Area',
+                phone: '+1-555-0102',
+                hostel: 'Girls Hostel B'
+            }
+        };
+
+        let currentWarden = null;
+        let currentEditId = null;
+
+        // Initialize data structure for each warden
+        let wardenData = {
+            warden1: {
+                students: [
+                    {id: 1, name: 'Emma Wilson', phone: '+1-555-1001', guardianPhone: '+1-555-2001', room: '101'},
+                    {id: 2, name: 'Olivia Brown', phone: '+1-555-1002', guardianPhone: '+1-555-2002', room: '102'}
+                ],
+                issues: [
+                    {id: 1, studentName: 'Emma Wilson', issue: 'Water heater not working', date: '2025-10-05', status: 'pending'},
+                    {id: 2, studentName: 'Olivia Brown', issue: 'Room light needs repair', date: '2025-10-08', status: 'resolved'}
+                ]
+            },
+            warden2: {
+                students: [
+                    {id: 1, name: 'Sophia Davis', phone: '+1-555-1003', guardianPhone: '+1-555-2003', room: '201'},
+                    {id: 2, name: 'Ava Martinez', phone: '+1-555-1004', guardianPhone: '+1-555-2004', room: '202'}
+                ],
+                issues: [
+                    {id: 1, studentName: 'Sophia Davis', issue: 'AC not cooling properly', date: '2025-10-06', status: 'pending'},
+                    {id: 2, studentName: 'Ava Martinez', issue: 'Door lock broken', date: '2025-10-09', status: 'resolved'}
+                ]
+            }
+        };
+
+        // Login Function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (wardens[username] && wardens[username].password === password) {
+                currentWarden = username;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+                loadDashboard();
+            } else {
+                alert('Invalid username or password!');
+            }
+        }
+
+        // Logout Function
+        function logout() {
+            currentWarden = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Load Dashboard
+        function loadDashboard() {
+            loadWardenProfile();
+            loadStudents();
+            loadIssues();
+            generateReport();
+        }
+
+        // Load Warden Profile
+        function loadWardenProfile() {
+            const warden = wardens[currentWarden];
+            document.getElementById('wardenInfo').innerHTML = `
+                <h3>👤 ${warden.name}</h3>
+                <p><strong>Email:</strong> ${warden.email}</p>
+                <p><strong>Phone:</strong> ${warden.phone}</p>
+                <p><strong>Address:</strong> ${warden.address}</p>
+                <p><strong>Hostel:</strong> ${warden.hostel}</p>
+            `;
+        }
+
+        // Load Students
+        function loadStudents() {
+            const tbody = document.getElementById('studentsBody');
+            tbody.innerHTML = '';
+            
+            wardenData[currentWarden].students.forEach(student => {
+                const row = `
+                    <tr>
+                        <td>${student.name}</td>
+                        <td>${student.phone}</td>
+                        <td>${student.guardianPhone}</td>
+                        <td>${student.room}</td>
+                        <td>
+                            <button class="btn-small btn-warning" onclick="editStudent(${student.id})">Edit</button>
+                            <button class="btn-small btn-danger" onclick="deleteStudent(${student.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Load Issues
+        function loadIssues() {
+            const tbody = document.getElementById('issuesBody');
+            tbody.innerHTML = '';
+            
+            wardenData[currentWarden].issues.forEach(issue => {
+                const statusBadge = issue.status === 'resolved' ? 
+                    '<span class="badge badge-resolved">Resolved</span>' : 
+                    '<span class="badge badge-pending">Pending</span>';
+                
+                const row = `
+                    <tr>
+                        <td>${issue.studentName}</td>
+                        <td>${issue.issue}</td>
+                        <td>${issue.date}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            ${issue.status === 'pending' ? 
+                                `<button class="btn-small btn-success" onclick="resolveIssue(${issue.id})">Resolve</button>` : ''}
+                            <button class="btn-small btn-warning" onclick="editIssue(${issue.id})">Edit</button>
+                            <button class="btn-small btn-danger" onclick="deleteIssue(${issue.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Generate Report
+        function generateReport() {
+            const issues = wardenData[currentWarden].issues;
+            const totalIssues = issues.length;
+            const resolvedIssues = issues.filter(i => i.status === 'resolved').length;
+            const pendingIssues = issues.filter(i => i.status === 'pending').length;
+
+            document.getElementById('reportStats').innerHTML = `
+                <div class="stat-card">
+                    <h3>${totalIssues}</h3>
+                    <p>Total Issues</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${resolvedIssues}</h3>
+                    <p>Resolved Issues</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${pendingIssues}</h3>
+                    <p>Pending Issues</p>
+                </div>
+            `;
+
+            let detailedHtml = '<h4 style="margin-top: 20px; color: #27ae60;">✓ Resolved Issues</h4><ul>';
+            issues.filter(i => i.status === 'resolved').forEach(issue => {
+                detailedHtml += `<li style="margin: 10px 0;"><strong>${issue.studentName}:</strong> ${issue.issue} (${issue.date})</li>`;
+            });
+            detailedHtml += '</ul>';
+
+            detailedHtml += '<h4 style="margin-top: 20px; color: #f39c12;">⏳ Pending Issues</h4><ul>';
+            issues.filter(i => i.status === 'pending').forEach(issue => {
+                detailedHtml += `<li style="margin: 10px 0;"><strong>${issue.studentName}:</strong> ${issue.issue} (${issue.date})</li>`;
+            });
+            detailedHtml += '</ul>';
+
+            document.getElementById('detailedReport').innerHTML = detailedHtml;
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Student Functions
+        function openAddStudentModal() {
+            currentEditId = null;
+            document.getElementById('studentModalTitle').textContent = 'Add Student';
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentPhone').value = '';
+            document.getElementById('guardianPhone').value = '';
+            document.getElementById('roomNumber').value = '';
+            document.getElementById('studentModal').classList.add('active');
+        }
+
+        function editStudent(id) {
+            currentEditId = id;
+            const student = wardenData[currentWarden].students.find(s => s.id === id);
+            document.getElementById('studentModalTitle').textContent = 'Edit Student';
+            document.getElementById('studentName').value = student.name;
+            document.getElementById('studentPhone').value = student.phone;
+            document.getElementById('guardianPhone').value = student.guardianPhone;
+            document.getElementById('roomNumber').value = student.room;
+            document.getElementById('studentModal').classList.add('active');
+        }
+
+        function saveStudent() {
+            const name = document.getElementById('studentName').value;
+            const phone = document.getElementById('studentPhone').value;
+            const guardianPhone = document.getElementById('guardianPhone').value;
+            const room = document.getElementById('roomNumber').value;
+
+            if (!name || !phone || !guardianPhone || !room) {
+                alert('Please fill all fields!');
+                return;
+            }
+
+            if (currentEditId) {
+                const student = wardenData[currentWarden].students.find(s => s.id === currentEditId);
+                student.name = name;
+                student.phone = phone;
+                student.guardianPhone = guardianPhone;
+                student.room = room;
+            } else {
+                const newId = Math.max(...wardenData[currentWarden].students.map(s => s.id), 0) + 1;
+                wardenData[currentWarden].students.push({
+                    id: newId,
+                    name: name,
+                    phone: phone,
+                    guardianPhone: guardianPhone,
+                    room: room
+                });
+            }
+
+            closeModal('studentModal');
+            loadStudents();
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                wardenData[currentWarden].students = wardenData[currentWarden].students.filter(s => s.id !== id);
+                loadStudents();
+            }
+        }
+
+        // Issue Functions
+        function openAddIssueModal() {
+            currentEditId = null;
+            document.getElementById('issueModalTitle').textContent = 'Add Issue';
+            document.getElementById('issueStudentName').value = '';
+            document.getElementById('issueDescription').value = '';
+            document.getElementById('issueDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('issueModal').classList.add('active');
+        }
+
+        function editIssue(id) {
+            currentEditId = id;
+            const issue = wardenData[currentWarden].issues.find(i => i.id === id);
+            document.getElementById('issueModalTitle').textContent = 'Edit Issue';
+            document.getElementById('issueStudentName').value = issue.studentName;
+            document.getElementById('issueDescription').value = issue.issue;
+            document.getElementById('issueDate').value = issue.date;
+            document.getElementById('issueModal').classList.add('active');
+        }
+
+        function saveIssue() {
+            const studentName = document.getElementById('issueStudentName').value;
+            const description = document.getElementById('issueDescription').value;
+            const date = document.getElementById('issueDate').value;
+
+            if (!studentName || !description || !date) {
+                alert('Please fill all fields!');
+                return;
+            }
+
+            if (currentEditId) {
+                const issue = wardenData[currentWarden].issues.find(i => i.id === currentEditId);
+                issue.studentName = studentName;
+                issue.issue = description;
+                issue.date = date;
+            } else {
+                const newId = Math.max(...wardenData[currentWarden].issues.map(i => i.id), 0) + 1;
+                wardenData[currentWarden].issues.push({
+                    id: newId,
+                    studentName: studentName,
+                    issue: description,
+                    date: date,
+                    status: 'pending'
+                });
+            }
+
+            closeModal('issueModal');
+            loadIssues();
+            generateReport();
+        }
+
+        function deleteIssue(id) {
+            if (confirm('Are you sure you want to delete this issue?')) {
+                wardenData[currentWarden].issues = wardenData[currentWarden].issues.filter(i => i.id !== id);
+                loadIssues();
+                generateReport();
+            }
+        }
+
+        function resolveIssue(id) {
+            const issue = wardenData[currentWarden].issues.find(i => i.id === id);
+            issue.status = 'resolved';
+            loadIssues();
+            generateReport();
+        }
+
+        // Modal Functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
